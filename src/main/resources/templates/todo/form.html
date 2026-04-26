@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Add Todo</title>
+  <title th:text="${todo.id} ? 'Edit Todo' : 'Add Todo'">Add Todo</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 2rem; }
     .form-row { margin-bottom: 1rem; }
@@ -10,14 +10,18 @@
     input, select { width: 320px; max-width: 100%; padding: 0.5rem; }
     .error { color: #b00020; font-size: 0.9rem; margin-top: 0.25rem; }
     .actions { margin-top: 1.5rem; }
+    button { padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #0056b3; }
   </style>
 </head>
 <body>
-<h1>Create Todo</h1>
+<h1 th:text="${todo.id} ? 'Edit Todo' : 'Create Todo'">Create Todo</h1>
 
 <p><a th:href="@{/}">← Back to list</a></p>
 
 <form th:action="@{/save}" method="post" th:object="${todo}">
+  <input type="hidden" th:field="*{id}"/>
+
   <div class="form-row">
     <label for="content">Content</label>
     <input id="content" type="text" th:field="*{content}" placeholder="Enter todo content"/>
@@ -47,7 +51,7 @@
   </div>
 
   <div class="actions">
-    <button type="submit">Save Todo</button>
+    <button type="submit" th:text="${todo.id} ? 'Update Todo' : 'Save Todo'">Save Todo</button>
   </div>
 </form>
 </body>

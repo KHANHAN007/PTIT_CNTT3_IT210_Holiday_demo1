@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -57,6 +58,28 @@ public class TodoController {
         }
         todoService.save(todo);
         redirectAttributes.addFlashAttribute("successMessage", "Todo saved successfully.");
+        return "redirect:/";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        var todoOptional = todoService.findById(id);
+        if (todoOptional.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Todo not found.");
+            return "redirect:/";
+        }
+        model.addAttribute("todo", todoOptional.get());
+        return "todo/form";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteTodo(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (todoService.findById(id).isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Todo not found.");
+            return "redirect:/";
+        }
+        todoService.deleteById(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Todo deleted successfully.");
         return "redirect:/";
     }
 }
