@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
   <meta charset="UTF-8">
-  <title th:text="${todo.id} ? 'Edit Todo' : 'Add Todo'">Add Todo</title>
+  <title th:text="${todo.id} ? #{form.title.edit} : #{form.title.create}">Add Todo</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 2rem; }
     .form-row { margin-bottom: 1rem; }
@@ -15,43 +15,49 @@
   </style>
 </head>
 <body>
-<h1 th:text="${todo.id} ? 'Edit Todo' : 'Create Todo'">Create Todo</h1>
+<h1 th:text="${todo.id} ? #{form.heading.edit} : #{form.heading.create}">Create Todo</h1>
 
-<p><a th:href="@{/}">← Back to list</a></p>
+<p>
+  <a th:href="@{/new(lang='vi')}" th:text="#{language.vi}">Tieng Viet</a>
+  |
+  <a th:href="@{/new(lang='en')}" th:text="#{language.en}">English</a>
+</p>
+
+<p><a th:href="@{/}" th:text="#{action.back}">Back to list</a></p>
 
 <form th:action="@{/save}" method="post" th:object="${todo}">
   <input type="hidden" th:field="*{id}"/>
 
   <div class="form-row">
-    <label for="content">Content</label>
-    <input id="content" type="text" th:field="*{content}" placeholder="Enter todo content"/>
+    <label for="content" th:text="#{table.content}">Content</label>
+    <input id="content" type="text" th:field="*{content}" th:placeholder="#{form.content.placeholder}"/>
     <div class="error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
   </div>
 
   <div class="form-row">
-    <label for="dueDate">Due Date</label>
+    <label for="dueDate" th:text="#{table.dueDate}">Due Date</label>
     <input id="dueDate" type="date" th:field="*{dueDate}"/>
     <div class="error" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></div>
   </div>
 
   <div class="form-row">
-    <label for="status">Status</label>
+    <label for="status" th:text="#{table.status}">Status</label>
     <select id="status" th:field="*{status}">
-      <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option>
+      <option th:each="status : ${statuses}" th:value="${status}" th:text="${#messages.msg('todo.status.' + status.name())}"></option>
     </select>
     <div class="error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
   </div>
 
   <div class="form-row">
-    <label for="priority">Priority</label>
+    <label for="priority" th:text="#{table.priority}">Priority</label>
     <select id="priority" th:field="*{priority}">
-      <option th:each="priority : ${priorities}" th:value="${priority}" th:text="${priority}"></option>
+      <option th:each="priority : ${priorities}" th:value="${priority}" th:text="${#messages.msg('todo.priority.' + priority.name())}"></option>
     </select>
     <div class="error" th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}"></div>
   </div>
 
   <div class="actions">
-    <button type="submit" th:text="${todo.id} ? 'Update Todo' : 'Save Todo'">Save Todo</button>
+    <button type="submit" th:text="${todo.id} ? #{action.update} : #{action.save}">Save Todo</button>
   </div>
 </form>
 </body>

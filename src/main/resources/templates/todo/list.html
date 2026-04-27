@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="UTF-8">
-    <title>Todo List</title>
+    <title th:text="#{list.title}">Todo List</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 2rem; }
         table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
@@ -28,9 +28,21 @@
     </style>
 </head>
 <body>
-<h1>Personal Todo App</h1>
+<h1 th:text="#{list.heading}">Personal Todo App</h1>
 
-<p><a th:href="@{/new}">+ Add New Todo</a></p>
+<p>
+    <strong th:text="#{list.owner.label}">Danh sach cua:</strong>
+    <span th:text="${ownerName}">Owner</span>
+    <a th:href="@{/owner}" th:text="#{list.owner.change}">Doi chu so huu</a>
+</p>
+
+<p>
+    <a th:href="@{/(lang='vi')}" th:text="#{language.vi}">Tieng Viet</a>
+    |
+    <a th:href="@{/(lang='en')}" th:text="#{language.en}">English</a>
+</p>
+
+<p><a th:href="@{/new}" th:text="#{list.add}">+ Add New Todo</a></p>
 
 <div class="success" th:if="${successMessage}" th:text="${successMessage}"></div>
 <div class="error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
@@ -38,12 +50,12 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Content</th>
-        <th>Due Date</th>
-        <th>Status</th>
-        <th>Priority</th>
-        <th>Actions</th>
+        <th th:text="#{table.id}">ID</th>
+        <th th:text="#{table.content}">Content</th>
+        <th th:text="#{table.dueDate}">Due Date</th>
+        <th th:text="#{table.status}">Status</th>
+        <th th:text="#{table.priority}">Priority</th>
+        <th th:text="#{table.actions}">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -51,15 +63,15 @@
         <td th:text="${todo.id}"></td>
         <td th:text="${todo.content}"></td>
         <td th:text="${todo.dueDate}"></td>
-        <td th:text="${todo.status}"></td>
-        <td th:text="${todo.priority}"></td>
+        <td th:text="${#messages.msg('todo.status.' + todo.status.name())}"></td>
+        <td th:text="${#messages.msg('todo.priority.' + todo.priority.name())}"></td>
         <td class="actions">
-            <a th:href="@{/edit/{id}(id=${todo.id})}">Edit</a>
-            <a class="delete" th:href="@{/delete/{id}(id=${todo.id})}" onclick="return confirm('Are you sure you want to delete this todo?');">Delete</a>
+            <a th:href="@{/edit/{id}(id=${todo.id})}" th:text="#{action.edit}">Edit</a>
+            <a class="delete" th:href="@{/delete/{id}(id=${todo.id})}" th:onclick="|return confirm('${#messages.msg('confirm.delete')}');|" th:text="#{action.delete}">Delete</a>
         </td>
     </tr>
     <tr th:if="${#lists.isEmpty(todos)}">
-        <td class="empty" colspan="6">No todo items yet. Create your first task using the form above.</td>
+        <td class="empty" colspan="6" th:text="#{list.empty}">No todo items yet. Create your first task using the form above.</td>
     </tr>
     </tbody>
 </table>
